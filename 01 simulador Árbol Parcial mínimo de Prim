@@ -1,0 +1,35 @@
+import heapq
+
+def prim(graph):
+    # Selecciona un nodo inicial arbitrario
+    start_node = list(graph.keys())[0]
+    # Estructura para almacenar los bordes del árbol parcial mínimo
+    mst = []
+    # Conjunto de nodos visitados
+    visited = set([start_node])
+    # Cola de prioridad para almacenar los bordes disponibles
+    edge_heap = [(weight, start_node, neighbor) for neighbor, weight in graph[start_node]]
+    heapq.heapify(edge_heap)
+
+    while edge_heap:
+        weight, from_node, to_node = heapq.heappop(edge_heap)
+        if to_node not in visited:
+            visited.add(to_node)
+            mst.append((from_node, to_node, weight))
+            for neighbor, neighbor_weight in graph[to_node]:
+                if neighbor not in visited:
+                    heapq.heappush(edge_heap, (neighbor_weight, to_node, neighbor))
+
+    return mst
+
+# Ejemplo de uso
+graph = {
+    'A': [('B', 2), ('C', 3)],
+    'B': [('A', 2), ('C', 4), ('D', 1)],
+    'C': [('A', 3), ('B', 4), ('D', 5)],
+    'D': [('B', 1), ('C', 5)]
+}
+
+minimum_spanning_tree = prim(graph)
+for edge in minimum_spanning_tree:
+    print(f"Arista: {edge[0]} - {edge[1]}, Peso: {edge[2]}")
